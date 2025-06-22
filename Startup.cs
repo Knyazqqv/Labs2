@@ -1,6 +1,9 @@
+using CompanyEmployees.ActionFilters;
 using CompanyEmployees.Extensions;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
 
 namespace CompanyEmployees;
@@ -23,11 +26,24 @@ public class Startup
         services.ConfigureLoggerService();
         services.ConfigureSqlContext(Configuration);
         services.ConfigureRepositoryManager();
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
 
+        services.AddScoped<ValidationFilterAttribute>();
+        services.AddScoped<ValidateCompanyExistsAttribute>();
+        services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
+
+        services.AddControllers(config =>
+        {
+            config.Filters.Add(new GlobalFilterExample());
+        });
         services.AddAutoMapper(typeof(Startup));
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         //services.AddSwaggerGen();
+
 
         services.AddControllers(config => {
             config.RespectBrowserAcceptHeader = true;
@@ -66,4 +82,8 @@ public class Startup
             endpoints.MapControllers();
         });
     }
+}
+
+internal class GlobalFilterExample : IFilterMetadata
+{
 }
