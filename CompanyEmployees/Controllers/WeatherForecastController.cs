@@ -1,24 +1,28 @@
 using Contracts;
 using Microsoft.AspNetCore.Mvc;
 
+namespace CompanyEmployees.Controllers;
+
 [Route("[controller]")]
 [ApiController]
 public class WeatherForecastController : ControllerBase
 {
-    private readonly IRepositoryManager _repository;
-    private readonly ILoggerManager _logger;
-
-    public WeatherForecastController(IRepositoryManager repository, ILoggerManager logger)
+    private ILoggerManager _logger;
+    public WeatherForecastController(ILoggerManager logger)
     {
-        _repository = repository;
-        _logger = logger;
+ 
+    _logger = logger;
     }
-
     [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
+    public IEnumerable<string> Get()
     {
-        //_repository.Company.AnyMethodFromCompanyRepository();
-        //_repository.Employee.AnyMethodFromEmployeeRepository();
-        return new string[] { "value1", "value2" };
+        _logger.LogInfo("¬от информационное сообщение от нашего контроллера значений.");
+       
+        _logger.LogDebug("¬от отладочное сообщение от нашего контроллера значений.");
+       
+        _logger.LogWarn("¬от сообщение предупреждени€ от нашего контроллера значений.");
+       
+        _logger.LogError("¬от сообщение об ошибке от нашего контроллера значений.");
+    return new string[] { "value1", "value2" };
     }
 }
